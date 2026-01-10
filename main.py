@@ -1,133 +1,148 @@
 import sys
+import questionary
 from services import TodoService
+from rich.console import Console
+from rich.table import Table
+from rich.panel import Panel
 
-class ConsoleApp:
+class InteractiveConsoleApp:
     """
-    Main console application for the To-Do list manager.
-    Handles user interaction, menu display, and delegates to TodoService.
+    An interactive console application for the To-Do list manager.
+    Uses rich for beautiful output and questionary for interactive prompts.
     """
     def __init__(self):
         self.todo_service = TodoService()
+        self.console = Console()
 
     def _display_menu(self):
-        """Displays the main menu options to the user."""
-        print("\n--- To-Do List Application ---")
-        print("1. Create New To-Do Item")
-        print("2. View All To-Do Items")
-        print("3. View To-Do Item Details by ID")
-        print("4. Update To-Do Item")
-        print("5. Delete To-Do Item")
-        print("6. Exit")
-        print("----------------------------")
+        """Displays the main menu and gets user choice via an interactive list."""
+        return questionary.select(
+            "--- To-Do List Application ---",
+            choices=[
+                "Create New To-Do Item",
+                "View All To-Do Items",
+                "View To-Do Item Details by ID",
+                "Update To-Do Item",
+                "Delete To-Do Item",
+                "Exit"
+            ]
+        ).ask()
 
-    def _get_user_input(self, prompt: str) -> str:
-        """Gets string input from the user."""
-        return input(prompt).strip()
+    def _get_user_input(self, prompt: str, default: str = "") -> str:
+        """Gets string input from the user using questionary."""
+        return questionary.text(prompt, default=default).ask().strip()
 
     def _create_item(self):
         """Handles the creation of a new To-Do item."""
-        print("\n--- Create New To-Do Item ---")
+        self.console.print("\n--- Create New To-Do Item ---", style="bold green")
         name = self._get_user_input("Enter item name: ")
         description = self._get_user_input("Enter item description: ")
         
         try:
             new_item = self.todo_service.create_item(name, description)
-            print(f"To-Do Item created successfully! ID: {new_item.id}")
+            self.console.print(f"To-Do Item created successfully! ID: {new_item.id}", style="bold green")
         except ValueError as e:
-            print(f"Error: {e}")
+            self.console.print(f"Error: {e}", style="bold red")
 
     def _view_all_items(self):
-        """Displays all To-Do items."""
-        print("\n--- All To-Do Items ---")
+        """Displays all To-Do items in a table."""
+        self.console.print("\n--- All To-Do Items ---", style="bold blue")
         items = self.todo_service.get_all_items()
         if not items:
-            print("No To-Do items found.")
+            self.console.print("No To-Do items found.", style="yellow")
             return
 
+        table = Table(show_header=True, header_style="bold magenta")
+        table.add_column("ID", style="dim", width=6)
+        table.add_column("Name")
+        table.add_column("Status")
+
         for item in items:
-            print(f"ID: {item.id}, Name: {item.name}, Status: {item.status}")
-        print("-----------------------")
+            table.add_row(str(item.id), item.name, item.status)
+        
+        self.console.print(table)
 
     def _view_item_details(self):
         """Displays detailed information for a specific To-Do item by ID."""
-        print("\n--- View To-Do Item Details ---")
+        self.console.print("\n--- View To-Do Item Details ---", style="bold blue")
         item_id = self._get_user_input("Enter the ID of the item to view: ")
         item = self.todo_service.get_item_details(item_id)
 
         if item:
-            print(item)
+            self.console.print(Panel(str(item), title=f"Details for ID {item.id}", border_style="blue"))
         else:
-            print(f"Error: To-Do item with ID '{item_id}' not found.")
-        print("-----------------------------")
+            self.console.print(f"Error: To-Do item with ID '{item_id}' not found.", style="bold red")
 
     def _update_item(self):
         """Handles the update of an existing To-Do item."""
-        print("\n--- Update To-Do Item ---")
+        self.console.print("\n--- Update To-Do Item ---", style="bold yellow")
         item_id = self._get_user_input("Enter the ID of the item to update: ")
         item = self.todo_service.get_item_details(item_id)
 
         if not item:
-            print(f"Error: To-Do item with ID '{item_id}' not found.")
+            self.console.print(f"Error: To-Do item with ID '{item_id}' not found.", style="bold red")
             return
 
-        print(f"Current details for ID '{item_id}':")
-        print(item)
+        self.console.print(Panel(str(item), title=f"Current details for ID {item_id}", border_style="yellow"))
 
-        print("\nEnter new values (leave blank to keep current value):")
-        new_name = self._get_user_input(f"New name ({item.name}): ")
-        new_description = self._get_user_input(f"New description ({item.description}): ")
-        new_status = self._get_user_input(f"New status ({item.status}) [Pending, Completed, In Progress, Cancelled]: ")
+        self.console.print("\nEnter new values (leave blank to keep current value):", style="italic")
+        new_name = self._get_user_input(f"New name ({item.name}): ", default=item.name)
+        new_description = self._get_user_input(f"New description ({item.description}): ", default=item.description)
+        new_status = questionary.select(
+            f"New status ({item.status}): ",
+            choices=["Pending", "In Progress", "Completed", "Cancelled"],
+            default=item.status
+        ).ask()
 
         try:
             updated = self.todo_service.update_item(
                 item_id,
-                name=new_name if new_name else None,
-                description=new_description if new_description else None,
-                status=new_status if new_status else None
+                name=new_name if new_name != item.name else None,
+                description=new_description if new_description != item.description else None,
+                status=new_status if new_status != item.status else None
             )
             if updated:
-                print(f"To-Do item '{item_id}' updated successfully.")
+                self.console.print(f"To-Do item '{item_id}' updated successfully.", style="bold green")
             else:
-                print(f"No changes applied to item '{item_id}'.")
+                self.console.print(f"No changes applied to item '{item_id}'.", style="yellow")
         except ValueError as e:
-            print(f"Error: {e}")
-        print("-------------------------")
-
+            self.console.print(f"Error: {e}", style="bold red")
 
     def _delete_item(self):
         """Handles the deletion of a To-Do item."""
-        print("\n--- Delete To-Do Item ---")
+        self.console.print("\n--- Delete To-Do Item ---", style="bold red")
         item_id = self._get_user_input("Enter the ID of the item to delete: ")
         
-        if self.todo_service.delete_item(item_id):
-            print(f"To-Do item '{item_id}' deleted successfully.")
+        if self.todo_service.get_item_details(item_id):
+            if questionary.confirm(f"Are you sure you want to delete item '{item_id}'?").ask():
+                if self.todo_service.delete_item(item_id):
+                    self.console.print(f"To-Do item '{item_id}' deleted successfully.", style="bold green")
+                else:
+                    self.console.print(f"Error: Could not delete item '{item_id}'.", style="bold red")
         else:
-            print(f"Error: To-Do item with ID '{item_id}' not found.")
-        print("-------------------------")
-
+            self.console.print(f"Error: To-Do item with ID '{item_id}' not found.", style="bold red")
 
     def run(self):
         """Runs the main application loop."""
         while True:
-            self._display_menu()
-            choice = self._get_user_input("Enter your choice: ")
+            choice = self._display_menu()
 
-            if choice == '1':
+            if choice == "Create New To-Do Item":
                 self._create_item()
-            elif choice == '2':
+            elif choice == "View All To-Do Items":
                 self._view_all_items()
-            elif choice == '3':
+            elif choice == "View To-Do Item Details by ID":
                 self._view_item_details()
-            elif choice == '4':
+            elif choice == "Update To-Do Item":
                 self._update_item()
-            elif choice == '5':
+            elif choice == "Delete To-Do Item":
                 self._delete_item()
-            elif choice == '6':
-                print("Exiting To-Do List Application. Goodbye!")
+            elif choice == "Exit":
+                self.console.print("Exiting To-Do List Application. Goodbye!", style="bold")
                 sys.exit(0)
             else:
-                print("Invalid choice. Please enter a number between 1 and 6.")
+                self.console.print("Invalid choice. Please select from the menu.", style="bold red")
 
 if __name__ == "__main__":
-    app = ConsoleApp()
+    app = InteractiveConsoleApp()
     app.run()
