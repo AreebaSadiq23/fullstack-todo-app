@@ -1,0 +1,317 @@
+.dashboard-page {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--light-text);
+  background-color: var(--dark-background);
+  line-height: 1.6;
+  min-height: calc(100vh - 80px); /* Adjust based on Navbar height */
+  padding-top: 20px; /* Space from Navbar */
+}
+
+.dashboard-header {
+  text-align: center;
+  padding: 40px 20px;
+  margin-bottom: 30px;
+  border-bottom: 2px solid var(--primary-green);
+}
+
+.dashboard-header h1 {
+  font-size: 2.8rem;
+  color: var(--primary-green);
+  margin-bottom: 15px;
+  background: linear-gradient(90deg, var(--primary-green), oklch(44.8% 0.119 151.328));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.dashboard-header p {
+  font-size: 1.1rem;
+  color: var(--light-text);
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.dashboard-content {
+  display: flex;
+  max-width: 1400px;
+  margin: 0 auto;
+  gap: 30px;
+  padding: 0 20px;
+}
+
+.dashboard-sidebar {
+  flex: 0 0 250px; /* Fixed width sidebar */
+  background-color: var(--secondary-dark);
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(57, 255, 20, 0.2);
+  border: 1px solid rgba(57, 255, 20, 0.3);
+  height: fit-content; /* Adjust height to content */
+  position: sticky;
+  top: 100px; /* Offset from sticky navbar */
+}
+
+.dashboard-sidebar h2 {
+  font-size: 1.6rem;
+  color: var(--primary-green);
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+.dashboard-sidebar button {
+  display: block;
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 15px;
+  background-color: transparent;
+  color: var(--light-text);
+  border: 1px solid rgba(57, 255, 20, 0.4);
+  border-radius: 8px;
+  font-size: 1rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+.dashboard-sidebar button:hover {
+  background-color: rgba(57, 255, 20, 0.1);
+  color: var(--primary-green);
+  transform: translateX(5px);
+}
+
+.dashboard-sidebar button.active-filter {
+  background-color: var(--primary-green);
+  color: var(--dark-background);
+  font-weight: bold;
+  box-shadow: 0 2px 10px rgba(57, 255, 20, 0.5);
+}
+
+.dashboard-sidebar button.active-filter:hover {
+  background-color: oklch(44.8% 0.119 151.328);
+  color: var(--dark-background);
+}
+
+.dashboard-main {
+  flex: 1;
+  background-color: var(--secondary-dark);
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(57, 255, 20, 0.2);
+  border: 1px solid rgba(57, 255, 20, 0.3);
+}
+
+.task-input-section {
+  margin-bottom: 50px;
+  padding-bottom: 30px;
+  border-bottom: 1px dashed rgba(57, 255, 20, 0.3);
+}
+
+.task-input-section h2 {
+  font-size: 2rem;
+  color: var(--primary-green);
+  margin-bottom: 30px;
+  text-align: left;
+}
+
+.task-input-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.task-input-form input[type="text"],
+.task-input-form textarea {
+  padding: 15px 20px;
+  border-radius: 8px;
+  border: 1px solid rgba(57, 255, 20, 0.5);
+  background-color: var(--dark-background);
+  color: var(--light-text);
+  font-size: 0.95rem;
+  box-shadow: inset 0 0 8px rgba(57, 255, 20, 0.1);
+}
+
+.task-input-form textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.task-input-form input::placeholder,
+.task-input-form textarea::placeholder {
+  color: #777;
+}
+
+.task-input-form button {
+  padding: 15px 25px;
+  background-color: var(--primary-green);
+  color: var(--dark-background);
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 15px rgba(57, 255, 20, 0.4);
+}
+
+.task-input-form button:hover {
+  background-color: oklch(44.8% 0.119 151.328);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(57, 255, 20, 0.6);
+}
+
+.task-list-section h2 {
+  font-size: 2rem;
+  color: var(--primary-green);
+  margin-bottom: 30px;
+  text-align: left;
+}
+
+.task-list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
+}
+
+.no-tasks {
+  color: var(--light-text);
+  font-style: italic;
+  text-align: center;
+  grid-column: 1 / -1; /* Span across all columns */
+  margin-top: 20px;
+}
+
+.task-card {
+  background-color: var(--dark-background);
+  padding: 25px;
+  border-radius: 12px;
+  border: 1px solid rgba(57, 255, 20, 0.2);
+  box-shadow: 0 4px 15px rgba(57, 255, 20, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+}
+
+.task-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(57, 255, 20, 0.2);
+}
+
+.task-card.completed {
+  border-color: rgba(57, 255, 20, 0.6);
+  box-shadow: 0 4px 15px rgba(57, 255, 20, 0.3);
+}
+
+.task-card h3 {
+  font-size: 1.3rem;
+  color: var(--primary-green);
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.task-card p {
+  font-size: 0.95rem;
+  color: var(--light-text);
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.task-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 15px;
+}
+
+.task-actions button {
+  padding: 8px 15px;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border: none;
+}
+
+.task-actions .btn-complete {
+  background-color: var(--primary-green);
+  color: var(--dark-background);
+}
+
+.task-actions .btn-complete:hover {
+  background-color: oklch(44.8% 0.119 151.328);
+}
+
+.task-actions .btn-incomplete {
+  background-color: #ffc107; /* Yellow for incomplete */
+  color: var(--dark-background);
+}
+
+.task-actions .btn-incomplete:hover {
+  background-color: #e0a800;
+}
+
+.task-actions .btn-delete {
+  background-color: #dc3545; /* Red for delete */
+  color: white;
+}
+
+.task-actions .btn-delete:hover {
+  background-color: #c82333;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .dashboard-content {
+    flex-direction: column;
+    padding: 0 15px;
+  }
+  .dashboard-sidebar {
+    position: static;
+    flex: none;
+    width: 100%;
+    margin-bottom: 30px;
+  }
+  .dashboard-sidebar h2 {
+    text-align: center;
+  }
+  .dashboard-sidebar button {
+    text-align: center;
+  }
+  .dashboard-main {
+    padding: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-header h1 {
+    font-size: 2.2rem;
+  }
+  .dashboard-header p {
+    font-size: 0.95rem;
+  }
+  .task-input-section h2, .task-list-section h2 {
+    font-size: 1.6rem;
+    text-align: center;
+  }
+  .task-list-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-header h1 {
+    font-size: 1.8rem;
+  }
+  .dashboard-sidebar button {
+    font-size: 0.85rem;
+    padding: 10px;
+  }
+  .task-card h3 {
+    font-size: 1.2rem;
+  }
+  .task-card p {
+    font-size: 0.85rem;
+  }
+  .task-actions button {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+  }
+}

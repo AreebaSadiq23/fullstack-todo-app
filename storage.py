@@ -1,58 +1,58 @@
-from typing import List, Optional, Dict
-from models import TodoItem
+from typing import List, Optional
+from models import Task
 
-class InMemoryStorage:
+_tasks: List[Task] = []
+_next_id = 1
+
+def get_all_tasks() -> List[Task]:
     """
-    Manages in-memory storage for TodoItem objects.
-    Provides CRUD operations without any persistence.
+    Get all tasks.
     """
-    def __init__(self):
-        self._items: List[TodoItem] = []
+    return _tasks
 
-    def add_item(self, item: TodoItem) -> None:
-        """Adds a new TodoItem to storage."""
-        self._items.append(item)
+def get_task_by_id(task_id: int) -> Optional[Task]:
+    """
+    Get a single task by ID.
+    """
+    for task in _tasks:
+        if task.id == task_id:
+            return task
+    return None
 
-    def get_all_items(self) -> List[TodoItem]:
-        """Retrieves all TodoItem objects from storage."""
-        return list(self._items)  # Return a copy to prevent external modification
+def add_task(title: str, description: str) -> Task:
+    """
+    Create a new task.
+    """
+    global _next_id
+    task = Task(id=_next_id, title=title, description=description)
+    _tasks.append(task)
+    _next_id += 1
+    return task
 
-    def get_item_by_id(self, item_id: str) -> Optional[TodoItem]:
-        """Retrieves a single TodoItem by its ID."""
-        for item in self._items:
-            if item.id == item_id:
-                return item
-        return None
+def update_task(task_id: int, title: str | None, description: str | None) -> Optional[Task]:
+    """
+    Update a task.
+    """
+    task = get_task_by_id(task_id)
+    if task:
+        if title:
+            task.title = title
+        if description:
+            task.description = description
+    return task
 
-    def update_item(self, item_id: str, new_data: Dict[str, str]) -> bool:
-        """
-        Updates an existing TodoItem by its ID with new data.
+def delete_task(task_id: int) -> None:
+    """
+    Delete a task.
+    """
+    global _tasks
+    _tasks = [task for task in _tasks if task.id != task_id]
 
-        Args:
-            item_id (str): The ID of the item to update.
-            new_data (Dict[str, str]): A dictionary containing fields to update.
-
-        Returns:
-            bool: True if the item was found and updated, False otherwise.
-        """
-        item = self.get_item_by_id(item_id)
-        if item:
-            for key, value in new_data.items():
-                if hasattr(item, key):
-                    setattr(item, key, value)
-            return True
-        return False
-
-    def delete_item(self, item_id: str) -> bool:
-        """
-        Deletes a TodoItem from storage by its ID.
-
-        Args:
-            item_id (str): The ID of the item to delete.
-
-        Returns:
-            bool: True if the item was found and deleted, False otherwise.
-        """
-        initial_count = len(self._items)
-        self._items = [item for item in self._items if item.id != item_id]
-        return len(self._items) < initial_count
+def update_task_status(task_id: int, status: str) -> Optional[Task]:
+    """
+    Update the status of a task.
+    """
+    task = get_task_by_id(task_id)
+    if task:
+        task.status = status
+    return task

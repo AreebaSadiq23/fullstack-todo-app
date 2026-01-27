@@ -1,0 +1,11 @@
+.App {
+  display: flex; /* Enable flex container */
+  flex-direction: column; /* Stack children vertically */
+  background-color: #121212; /* Dark background for premium feel */
+  min-height: 100vh; /* Ensure it takes at least full viewport height */
+  color: #ffffff; /* White text */
+  --primary-green: oklch(44.8% 0.119 151.328); /* Replaced with Oklch color */
+  --dark-background: #121212;
+  --light-text: #e0e0e0;
+  --secondary-dark: #222222;
+}

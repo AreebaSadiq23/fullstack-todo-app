@@ -1,0 +1,59 @@
+.footer {
+  background-color: var(--dark-background); /* Use the dark background variable */
+  color: var(--light-text); /* Light text color */
+  padding: 1.5rem 2rem;
+  text-align: center;
+  box-shadow: 0 -2px 15px rgba(57, 255, 20, 0.4); /* Similar shadow to navbar */
+  border-top: 1px solid rgba(57, 255, 20, 0.3); /* Subtle green border */
+  margin-top: auto; /* Pushes the footer to the bottom */
+  width: 100%;
+  box-sizing: border-box; /* Include padding in width */
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-content p {
+  margin: 0 0 1rem 0;
+  font-size: 0.85rem;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center; /* Center the links horizontally */
+}
+
+.footer-links a {
+  color: var(--primary-green); /* Parrot green for links */
+  text-decoration: none;
+  margin: 0 1rem;
+  transition: color 0.3s ease;
+  font-size: 0.95rem; /* Added font size */
+}
+
+.footer-links a:hover {
+  /* No hover effects */
+}
+
+/* Responsive adjustments for footer */
+@media (max-width: 768px) {
+  .footer {
+    padding: 1rem;
+    flex-direction: column; /* Ensure footer items stack on small screens */
+  }
+
+  .footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; /* Space between vertical links */
+  }
+
+  .footer-links a {
+    margin: 0; /* Remove horizontal margins for vertical stacking */
+  }
+
+  }
