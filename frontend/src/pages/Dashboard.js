@@ -8,13 +8,13 @@ const Dashboard = () => {
   const [filter, setFilter] = useState('all'); // 'all', 'pending', 'active', 'completed'
 
   useEffect(() => {
-    fetch('http://localhost:8000/tasks')
+    fetch('/api/tasks')
       .then(response => response.json())
       .then(data => setTasks(data));
   }, []);
 
   const addTask = () => {
-    fetch('http://localhost:8000/tasks', {
+    fetch('/api/tasks', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -30,7 +30,7 @@ const Dashboard = () => {
   };
 
   const deleteTask = (id) => {
-    fetch(`http://localhost:8000/tasks/${id}`, {
+    fetch(`/api/tasks/${id}`, {
       method: 'DELETE',
     }).then(() => {
       setTasks(tasks.filter(task => task.id !== id));
@@ -40,7 +40,7 @@ const Dashboard = () => {
   const toggleComplete = (id, currentStatus) => {
     // Backend expects 'complete' or 'incomplete'
     const newStatus = currentStatus === 'completed' ? 'incomplete' : 'completed';
-    fetch(`http://localhost:8000/tasks/${id}/${newStatus}`, {
+    fetch(`/api/tasks/${id}/${newStatus}`, {
       method: 'PUT',
     })
       .then(response => response.json())
